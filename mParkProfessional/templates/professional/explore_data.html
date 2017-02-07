@@ -1,0 +1,263 @@
+{% load staticfiles %}
+
+<html>
+<head>
+	<link rel="stylesheet" href="{% static "theme.css" %}">
+	<link rel="stylesheet" href="{% static "bootstrap.min.css" %}">
+	<link rel="stylesheet" href="{% static "animate.css" %}" type="text/css">
+	<script type="text/javascript" src="{% static "rmodal.js" %}"></script>
+
+
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>
+      Google Visualization API Sample
+    </title>
+    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+	 google.load("visualization", "1.1", {packages:["calendar"]});
+      google.load('visualization', '1.1', {packages: ['corechart', 'controls']});
+    </script>
+    <script type="text/javascript">
+      function drawVisualization() {
+        var dashboard = new google.visualization.Dashboard(
+             document.getElementById('dashboard'));
+
+        //debugger;
+
+         var control = new google.visualization.ControlWrapper({
+           'controlType': 'ChartRangeFilter',
+           'containerId': 'control',
+           'options': {
+             // Filter by the date axis.
+             'filterColumnIndex': 0,
+             'ui': {
+               'chartType': 'LineChart',
+               'chartOptions': {
+                 'chartArea': {'width': '90%'},
+                 'hAxis': {'baselineColor': 'none'}
+               },
+               // Display a single series that shows the closing value of the stock.
+               // Thus, this view has two columns: the date (axis) and the stock value (line series).
+               'chartView': {
+                 'columns': [0, 3]
+               },
+               // 1 day in milliseconds = 24 * 60 * 60 * 1000 = 86,400,000
+               'minRangeSize': 86400000
+
+             }
+           },
+           // Initial range: 2012-02-09 to 2012-03-20.
+           'state': {'range': {'start': new Date(2012, 1, 9), 'end': new Date(2012, 2, 20)}}
+         });
+
+        //debugger;
+
+         var step_length_chart = new google.visualization.ChartWrapper({
+           'chartType': 'CandlestickChart',
+           'containerId': 'step_length_chart',
+           'options': {
+             // Use the same chart area width as the control for axis alignment.
+             'chartArea': {'height': '80%', 'width': '90%'},
+             'hAxis': {'slantedText': false},
+             'vAxis': {'viewWindow': {'min': 0, 'max': 2000}},
+             'legend': {'position': 'none'}
+           },
+           // Convert the first column from 'date' to 'string'.
+           'view': {
+             'columns': [
+               {
+                 'calc': function(dataStepLengthTable, rowIndex) {
+                   return dataStepLengthTable.getFormattedValue(rowIndex, 0);
+                 },
+                 'type': 'string'
+               }, 1, 2, 3, 4]
+           }
+         });
+		 
+		 
+		 var chart = new google.visualization.ChartWrapper({
+           'chartType': 'CandlestickChart',
+           'containerId': 'chart',
+           'options': {
+             // Use the same chart area width as the control for axis alignment.
+             'chartArea': {'height': '80%', 'width': '90%'},
+             'hAxis': {'slantedText': false},
+             'vAxis': {'viewWindow': {'min': 0, 'max': 2000}},
+             'legend': {'position': 'none'}
+           },
+           // Convert the first column from 'date' to 'string'.
+           'view': {
+             'columns': [
+               {
+                 'calc': function(dataTable, rowIndex) {
+                   return dataTable.getFormattedValue(rowIndex, 0);
+                 },
+                 'type': 'string'
+               }, 1, 2, 3, 4]
+           }
+         });
+
+        //debugger;
+
+         var data = new google.visualization.DataTable();
+         data.addColumn('date', 'Date');
+         data.addColumn('number', 'Stock low');
+         data.addColumn('number', 'Stock open');
+         data.addColumn('number', 'Stock close');
+         data.addColumn('number', 'Stock high');
+
+         // Create random stock values, just like it works in reality.
+         var open, close = 300;
+         var low, high;
+         for (var day = 1; day < 121; ++day) {
+           var change = (Math.sin(day / 2.5 + Math.PI) + Math.sin(day / 3) - Math.cos(day * 0.7)) * 150;
+           change = change >= 0 ? change + 10 : change - 10;   
+		   open = close;
+           close = Math.max(50, open + change);
+           low = Math.min(open, close) - (Math.cos(day * 1.7) + 1) * 15;
+           low = Math.max(0, low);
+           high = Math.max(open, close) + (Math.cos(day * 1.3) + 1) * 15;
+           var date = new Date(2012, 0 ,day);
+           data.addRow([date, Math.round(low), Math.round(open), Math.round(close), Math.round(high)]);
+         }
+		 
+		 
+		 
+		 var step_length_data = new google.visualization.DataTable();
+         step_length_data.addColumn('date', 'Date');
+         step_length_data.addColumn('number', 'Stock low');
+         step_length_data.addColumn('number', 'Stock open');
+         step_length_data.addColumn('number', 'Stock close');
+         step_length_data.addColumn('number', 'Stock high');
+
+         // Create random stock values, just like it works in reality.
+         var open, close = 100;
+         var low, high;
+         for (var day = 1; day < 121; ++day) {
+           var change = (Math.sin(day / 0.5 + Math.PI) + Math.sin(day / 3) - Math.cos(day * 90.7)) * 150;
+           change = change >= 0 ? change + 10 : change - 10;   
+		   open = close;
+           close = Math.max(50, open + change);
+           low = Math.min(open, close) - (Math.cos(day * 0.7) + 1) * 2;
+           low = Math.max(0, low);
+           high = Math.max(open, close) + (Math.cos(day * 0.3) + 1) * 15;
+           var date = new Date(2012, 0 ,day);
+           step_length_data.addRow([date, Math.round(low), Math.round(open), Math.round(close), Math.round(high)]);
+         }
+		
+         dashboard.bind(control, step_length_chart);
+         dashboard.bind(control, chart);
+         dashboard.draw(data);
+		 
+		 
+
+	    var dataTable = new google.visualization.DataTable();
+       dataTable.addColumn({ type: 'date', id: 'Date' });
+       dataTable.addColumn({ type: 'number', id: 'Won/Loss' });
+       dataTable.addRows([
+          [ new Date(2012, 3, 13), -1 ],
+          [ new Date(2012, 3, 14), 2 ],
+          [ new Date(2012, 3, 15), 2 ],
+          [ new Date(2012, 3, 16), 2 ],
+          [ new Date(2012, 3, 17), 2 ],
+          // Many rows omitted for brevity.
+          [ new Date(2013, 9, 4), 2 ],
+          [ new Date(2013, 9, 5), 2 ],
+          [ new Date(2013, 9, 12), 2 ],
+          [ new Date(2013, 9, 13), -1 ],
+          [ new Date(2013, 9, 19), -1 ],
+          [ new Date(2013, 9, 23), -1 ],
+          [ new Date(2013, 9, 24), 2 ],
+          [ new Date(2013, 9, 30), 2 ],
+		  
+		  [ new Date(2015, 3, 13), 2 ],
+          [ new Date(2015, 3, 14), 2 ],
+          [ new Date(2015, 3, 15), 2 ],
+          [ new Date(2015, 3, 16), -1 ],
+          [ new Date(2015, 3, 17), -1 ]
+        ]);
+
+       var chart = new google.visualization.Calendar(document.getElementById('calendar_basic'));
+
+       var options = {
+         title: "Sessions",
+         height: 700,
+       };
+
+       chart.draw(dataTable, options);
+
+
+
+       // Every time the table fires the "select" event, it should call your
+       // selectHandler() function.
+
+	   google.visualization.events.addListener(chart, 'select', selectHandler);
+
+	   function selectHandler() {
+
+	    var selection = chart.getSelection();
+		var message = '';
+
+ for (var i = 0; i < selection.length; i++) {
+    var item = selection[i];
+    if (item.row != null && item.column != null) {
+      message += '{row:' + item.row + ',column:' + item.column + '}';
+    } else if (item.row != null) {
+
+      var selectedDate = new Date(dataTable.getValue(item.row, 0));
+var month = selectedDate.getUTCMonth() + 1; //months from 1-12
+var day = selectedDate.getUTCDate() + 1;
+var year = selectedDate.getUTCFullYear();
+
+newdate = year + "/" + month + "/" + day;
+
+
+      message += '{row:' + item.row + newdate + '}';
+
+
+    } else if (item.column != null) {
+      message += '{column:' + item.column + '}';
+    }
+  }
+  if (message == '') {
+    message = 'nothing';
+  }
+  alert('You selected ' + message);
+
+		window.location = 'raw_data';
+	}
+
+
+      }
+
+
+
+
+      google.setOnLoadCallback(drawVisualization);
+	  
+
+        </script>
+  </head>
+
+  <body id="body" style="overflow:hidden;">
+  <div class="headsection group" >
+      <div class="headcol headspan_1_of_2">
+          <IMG SRC="{% static "mPark_logo.jpg" %}" alt="mPark logo" height="80%" >
+      </div>
+      <div class="headcol headspan_2_of_2">
+          {% if user.is_authenticated %}
+          <p class="top-menu">Welcome {{ user.username }}! (<a href="{% url 'django.contrib.auth.views.logout' %}">Log out</a>)</p>
+          {% else %}
+          <a href="{% url 'django.contrib.auth.views.login' %}" class="top-menu"><span class="glyphicon glyphicon-lock"></span></a>
+          {% endif %}
+          <p class="top-menu">[<a href="{% url 'post_list' %}">News and updates</a>]</p>
+
+      </div>
+  </div>
+
+
+          <div id="calendar_basic" width="100%"></div>
+
+
+  </body>
+</html>

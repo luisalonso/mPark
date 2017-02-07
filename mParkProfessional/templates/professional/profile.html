@@ -1,0 +1,359 @@
+{% load staticfiles %}
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+    <title>
+        [{{ patient.name }} {{ patient.last_name }} profile]
+    </title>
+
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="{% static "theme.css" %}">
+    <link rel="stylesheet" href="{% static "bootstrap.min.css" %}">
+    <link rel="stylesheet" href="{% static "animate.css" %}" type="text/css" >
+
+    <script type="text/javascript" src="{% static "rmodal.js" %}"></script>
+  <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+
+    <script type="text/javascript">
+  google.load("visualization", "1.1", {packages:["calendar"]});
+  google.load('visualization', '1.1', {packages: ['corechart', 'controls']});
+
+  var p1 = {{ session.phase_I_duration }};
+  var p2 = {{ session.phase_II_duration }};
+  var p3 = {{ session.phase_III_duration }};
+  var p4 = {{ session.phase_IV_duration }};
+  var p5 = {{ session.phase_V_duration }};
+
+  function init() {
+    document.getElementById("valBoxPhase1").innerHTML=+p1;
+    document.getElementById("phase_I_duration").value = +p1;
+
+    document.getElementById("valBoxPhase2").innerHTML=+p2;
+    document.getElementById("phase_II_duration").value = +p2;
+
+    document.getElementById("valBoxPhase3").innerHTML=+p3;
+    document.getElementById("phase_III_duration").value = +p3;
+
+    document.getElementById("valBoxPhase4").innerHTML=+p4;
+    document.getElementById("phase_IV_duration").value = +p4;
+
+    document.getElementById("valBoxPhase5").innerHTML=+p5;
+    document.getElementById("phase_V_duration").value = +p5;
+
+    updatePieChart();
+  }
+
+  function showVal1(newVal) {
+    document.getElementById("valBoxPhase1").innerHTML=newVal;
+
+    p1 = +newVal;
+    updatePieChart();
+  }
+
+  function showVal2(newVal) {
+    document.getElementById("valBoxPhase2").innerHTML=newVal;
+
+    p2 = +newVal;
+    updatePieChart();
+  }
+
+  function showVal3(newVal) {
+    document.getElementById("valBoxPhase3").innerHTML=newVal;
+
+    p3 = +newVal;
+    updatePieChart();
+  }
+
+  function showVal4(newVal) {
+    document.getElementById("valBoxPhase4").innerHTML=newVal;
+
+    p4 = +newVal;
+    updatePieChart();
+  }
+
+  function showVal5(newVal) {
+    document.getElementById("valBoxPhase5").innerHTML=newVal;
+
+    p5 = +newVal;
+    updatePieChart();
+  }
+
+  function updatePieChart() {
+    document.getElementById("valBoxPhaseTotal").innerHTML=+p1+p2+p3+p4+p5;
+
+    var data = google.visualization.arrayToDataTable([
+      ['Phases', 'Minutes distribution'],
+      ['Phase 1', p1],
+      ['Phase 2', p2],
+      ['Phase 3', p3],
+      ['Phase 4', p4],
+      ['Phase 5', p5]
+    ]);
+
+    var options = {
+      title: 'Rehabilitation session',
+      colors:['#673089','#1d99d4', '#63bd4e', '#f3bb33', '#f04245'],
+      pieSliceText: 'label',
+      legend: 'none',
+      pieHole: 0.4,
+    };
+
+
+    var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
+    chart.draw(data, options);
+  }
+
+  //  function drawVisualization() {
+  //    var data = google.visualization.arrayToDataTable([
+  //      ['Phases', 'Minutes distribution'],
+  //      ['1', 5],
+  //      ['2', 5],
+  //      ['3', 10],
+  //      ['4', 5],
+  //      ['5', 5]
+  //      ]);
+
+  //    var options = {
+  //      title: 'Rehabilitation session',
+  //      colors:['#673089','#1d99d4', '#63bd4e', '#f3bb33', '#f04245'],
+  //      pieSliceText: 'label',
+  //      legend: 'none',
+  //      pieHole: 0.4,
+  //    };
+
+  //    var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
+  //    chart.draw(data, options);
+  //  }
+  google.setOnLoadCallback(init);
+  </script>
+
+
+</head>
+
+<body id="body" >
+<div class="headsection group" >
+    <div class="headcol headspan_1_of_2">
+        <IMG SRC="{% static "mPark_logo.jpg" %}" alt="mPark logo" height="80%" >
+    </div>
+    <div class="headcol headspan_2_of_2">
+        <p> Welcome, {{ professional.name }}. </p>
+        <a href={% url 'explore_data' %}>Explore data</a> >
+        <a href={% url 'dashboard' %}>Go back to dashboard</a> > {{ patient.name }} {{ patient.last_name }} profile
+    </div>
+</div>
+
+
+<div class="section group" style="text-align:center; ">
+    <div class="col span_1_of_2">
+
+        <p style="width:100%; height:auto; margin:0px 10px 20px 10px; padding:5px; text-align:justify; color:#666; background:#EEE;">
+            Here you can adjust the settings of the rehabilitation session. Don't forget to save the changes.
+                    <a target="_blank" href={% url 'guide' %}>Help</a>
+
+        </p>
+
+        <div class="form-group" style="width:100%; margin-top:10px;">
+            <label for="dummyText" class="control-label col-xs-4">Max BPM</label>
+            <div class="input-group col-xs-7">
+                <select id="periodicity"  class="form-control">
+                    <option value="60">Daily</option>
+                    <option value="80">6 days per week</option>
+                    <option value="80">5 days per week</option>
+                    <option value="80">4 days per week</option>
+                    <option value="80">3 days per week</option>
+                    <option value="80">2 days per week</option>
+                    <option value="80">1 days per week</option>
+                </select>
+            </div>
+        </div>
+
+
+        <p>
+            <font color="#673089">Phase 1: Warming up [</font>
+            <span id="valBoxPhase1"> </span>
+            <font color="#673089">] min</font>
+            <input id="phase_I_duration" type="range" min="1" max="15" step="1" onchange="showVal1(this.value)" width="100">
+        </p>
+        <p>
+            <font color="#1d99d4">Phase 2: RAS [ </font>
+            <span id="valBoxPhase2"> </span>
+            <font color="#1d99d4">] min</font>
+            <input id="phase_II_duration" type="range" min="1" max="15" step="1" onchange="showVal2(this.value)" width="100">
+        </p>
+
+        <p>
+            <font color="#63bd4e">Phase 3: RAS + music [</font>
+            <span id="valBoxPhase3"> </span>
+            <font color="#63bd4e">] min</font>
+            <input id="phase_III_duration" type="range" min="1" max="15" step="1" onchange="showVal3(this.value)" width="100">
+        </p>
+
+        <p>
+            <font color="#f3bb33">Phase 4: RAS [</font>
+            <span id="valBoxPhase4"> </span>
+            <font color="#f3bb33">] min </font>
+            <input id="phase_IV_duration" type="range" min="1" max="15" step="1" onchange="showVal4(this.value)" width="100">
+        </p>
+
+        <p>
+            <font color="#f04245">Phase 5: RAS + Music [</font>
+            <span id="valBoxPhase5"> </span>
+            <font color="#f04245">] min</font>
+            <input id="phase_V_duration" type="range" min="1" max="15" step="1" onchange="showVal5(this.value)" width="100">
+        </p>
+
+        <div class="form-group" style="width:100%; margin-top:40px;">
+            <label for="dummyText" class="control-label col-xs-4">Min BPM</label>
+            <div class="input-group col-xs-7">
+                <select id="minBPM" class="form-control">
+                    <option value="60">60 BPM</option>
+                    <option value="80">80 BPM</option>
+                    <option value="100">100 BPM</option>
+                    <option value="120">120 BPM</option>
+                    <option value="140">140 BPM</option>
+                    <option value="160">160 BPM</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group" style="width:100%; margin-top:10px;">
+            <label for="dummyText" class="control-label col-xs-4">Max BPM</label>
+            <div class="input-group col-xs-7">
+                <select id="maxBPM"  class="form-control">
+                    <option value="60">60 BPM</option>
+                    <option value="80">80 BPM</option>
+                    <option value="100">100 BPM</option>
+                    <option value="120">120 BPM</option>
+                    <option value="140">140 BPM</option>
+                    <option value="160">160 BPM</option>
+                </select>
+            </div>
+        </div>
+
+
+
+        <form class="form-signin" method="POST">
+            {% csrf_token %}
+            <button id="submit" class="btn btn-lg btn-primary btn-block" type="submit">Save session</button>
+        </form>
+
+    </div>
+
+
+    <div class="col span_2_of_2">
+        <p>
+
+        <div class="errorMessage" style="width:100%; height:40px; border:2px dotted #FF0000; background:#FFE5E5; margin:5px; padding:10px; text-align:center; color:#222;">
+            <p>Oops! We had some problems while saving the session. Please try again later.</p>
+        </div>
+
+        <div class="successMessage" style="width:100%; height:40px; border:2px dotted #339933; background:#ECF9EC; margin:5px; padding:10px; text-align:center; color:#222;">
+            <p>Session saved succesfully!.</p>
+        </div>
+
+        <font color="#f04245">Total session duration - </font>
+        <span id="valBoxPhaseTotal"> </span>
+        <font color="#f04245"> minutes</font>
+        </p>
+
+        <div id="donutchart" style="width:100%; height:500px; margin:0; padding:0; border:5px solid #DDD;"></div>
+    </div>
+</div>
+
+</div>
+</body>
+</html>
+
+<script type="text/javascript">
+
+  var eMinBPM = document.getElementById("minBPM");
+  var eMaxBPM = document.getElementById("maxBPM");
+
+  eMinBPM.value = {{ session.min_BPM }};
+  eMaxBPM.value = {{ session.max_BPM }};
+
+  </script>
+
+<script>
+
+//For getting CSRF token to be used in the Django REQUEST
+function getCookie(name) {
+         var cookieValue = null;
+         if (document.cookie && document.cookie != '') {
+               var cookies = document.cookie.split(';');
+         for (var i = 0; i < cookies.length; i++) {
+              var cookie = jQuery.trim(cookies[i]);
+         // Does this cookie string begin with the name we want?
+         if (cookie.substring(0, name.length + 1) == (name + '=')) {
+           cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+             break;
+            }
+         }
+     }
+return cookieValue;
+}
+
+function validateEmail(email) {
+    var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+    return re.test(email);
+}
+
+// Hide message DIV
+$( ".successMessage" ).hide();
+$( ".errorMessage" ).hide();
+
+
+//For doing AJAX post when submit is clicked
+$("#submit").click(function(e) {
+
+//Prevent default submit. Must for Ajax post.Beginner's pit.
+e.preventDefault();
+
+//Prepare csrf token
+var csrftoken = getCookie('csrftoken');
+
+//Collect data from fields
+//var email = $('#minBPM').val();
+//var password = $('#maxBPM').val();
+//alert('Hi   p1 > '+ p1 + ' p2 > '+ p2 + ' t1 > '+ p3);
+
+//This is the Ajax post.
+$.ajax({
+      url : '{% url 'session_save' %}',              // the endpoint,commonly same url
+      type : "POST",                                 // http method
+      data : { csrfmiddlewaretoken : csrftoken,
+      pk : '{{ patient.id }}',
+      pp : '{{ professional.id }}',
+      t1 : p1,
+      t2 : p2,
+      t3 : p3,
+      t4 : p4,
+      t5 : p5,
+      min : eMinBPM.options[eMinBPM.selectedIndex].value,
+      max : eMaxBPM.options[eMaxBPM.selectedIndex].value,
+},
+
+// handle a successful response
+success : function(json) {
+console.log(json);
+
+     $( ".successMessage" ).show( "fast").delay(3000).fadeOut('fast', function() {
+          $(this).hide();
+     });
+
+},
+
+// handle a non-successful response
+error : function(xhr,errmsg,err) {
+console.log(xhr.status + ": " + xhr.responseText);
+
+     $( ".errorMessage" ).show( "fast").delay(3000).fadeOut('fast', function() {
+          $(this).hide();
+     });
+
+}
+});
+});
+</script>

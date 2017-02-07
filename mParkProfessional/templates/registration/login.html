@@ -1,0 +1,31 @@
+{% extends "external_base.html" %}
+
+
+{% block messages %}
+    {% if form.errors %}
+        <p class="errorMessage" style="width:100%; height:40px; border:2px dotted #FF0000; background:#FFE5E5; margin:5px; padding:10px; text-align:center; color:#222;">
+            Your username and password didn't match. Please try again.
+        </p>
+    {% endif %}
+
+
+    <form method="post" action="{% url 'django.contrib.auth.views.login' %}" style="margin-top: 10px;" > {% csrf_token %}
+
+      <div style="width:300px; height:50px; margin:0 auto; text-align:left; color:#666;">
+        Username (email) <br> {{ form.username }}
+      </div>
+
+      <div style="width:300px; height:50px; margin:0 auto; text-align:left; color:#666;">
+        Password <br>{{ form.password }}
+      </div>
+
+      <input type="submit" value="login" class="btn btn-primary"  />
+    </form>
+
+    <div class="row">
+      <div class="col-lg-12">
+        <a href="/accounts/register">I'm new. Register!</a>  |  <a href={% url 'reset' %}>I forgot my password.</a>
+      </div>
+    </div>
+
+{% endblock %}

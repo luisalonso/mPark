@@ -1,0 +1,313 @@
+/*  SECTIONS  */
+* {
+	font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    border: 0px solid red;
+}
+
+body {
+	border-top: 3px dotted #8A0868;
+	border-bottom: 3px dotted #8A0868;
+}
+
+.section {
+	clear: both;
+	padding: 0px;
+	margin: 0px;
+}
+
+/*  COLUMN SETUP  */
+.col {
+	display: block;
+	float:left;
+	margin: 1% 0 1% 1.6%;
+}
+.col:first-child {
+    margin-left: 10px; }
+
+/*  GROUPING  */
+.group:before,
+.group:after { content:""; display:table; }
+.group:after { clear:both;}
+.group { zoom:1; /* For IE 6/7 */ }
+/*  GRID OF TWO  */
+.span_2_of_2 {
+	width: 75%;
+	height: 100%;
+}
+.span_1_of_2 {
+	width: 20%;
+	height: 100%;
+}
+
+/*  GO FULL WIDTH AT LESS THAN 480 PIXELS */
+
+@media only screen and (max-width: 480px) {
+	.col {
+		margin: 1% 0 1% 0%;
+	}
+}
+
+@media only screen and (max-width: 480px) {
+	.span_2_of_2, .span_1_of_2 { width: 100%; }
+}
+
+
+
+
+
+.headsection {
+    clear: both;
+    padding: 0px;
+    height:80px;
+    margin: 0px;
+    border-bottom:1px solid #8A0868;
+}
+
+/*  COLUMN SETUP  */
+.headcol {
+    display: block;
+    float:left;
+    margin: 1% 0 1% 1.6%;
+}
+.headcol:first-child { margin-left: 0; }
+
+/*  GROUPING  */
+.headgroup:before,
+.headgroup:after { content:""; display:table; }
+.headgroup:after { clear:both;}
+.headgroup { zoom:1; /* For IE 6/7 */ }
+/*  GRID OF TWO  */
+.headspan_2_of_2 {
+    width: 48%;
+    text-align: right;
+}
+.headspan_1_of_2 {
+    width: 49.2%;
+}
+
+/*  GO FULL WIDTH AT LESS THAN 480 PIXELS */
+@media only screen and (max-width: 480px) {
+    .headcol {
+        margin: 1% 0 1% 0%;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .headspan_2_of_2, .headspan_1_of_2 { width: 100%; }
+}
+
+
+
+#filter_div .google-visualization-controls-stringfilter input{
+width: 100%;
+
+
+            }
+
+
+
+.google-visualization-controls-string-filter {
+  width:100%;
+}
+
+
+
+
+            .cssHeaderRow {
+                background-color: #2A94D6;
+
+            }
+            .cssTableRow {
+                background-color: #F0F1F2;
+
+            }
+            .cssOddTableRow {
+                background-color: #F0F1F2;
+            }
+            .cssSelectedTableRow {
+                font-size: 20px;
+                font-weight:bold;
+            }
+            .cssHoverTableRow {
+                background: #ccc;
+            }
+            .cssHeaderCell {
+                color: #FFFFFF;
+                font-size: 16px;
+                padding: 10px !important;
+                border: solid 1px #000;
+
+            }
+            .cssTableCell {
+                font-size: 16px;
+                padding: 10px !important;
+                border: solid 1px #FFFFFF;
+                width: 500px;
+            }
+            .cssRowNumberCell {
+                text-align: center;
+            }
+
+
+
+
+
+
+
+      .modal .modal-dialog {
+        width: 400px;
+      }
+
+          .modalGetPass .modal-dialog {
+        width: 400px;
+      }
+
+
+			/*General rules*/
+
+	  input {
+    width:300px;
+		margin:0 auto;
+    line-height:18px;
+    padding:2px 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    border:1px solid #CCC;
+}
+
+
+/*Text, email & tel input fields*/
+input[type=text],
+input[type=email],
+input[type=tel] {
+    width:300px;
+    margin-bottom:8px;
+    padding:2px 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    border:1px solid #CCC;
+}
+/*Just the tel field*/
+input[type=tel] {
+    width:150px;
+}
+/*The Submit Button */
+input[type=button] {
+    margin-top:5px;
+    margin-left:60px;
+    padding:2px 20px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    border:2px solid #06C;
+    background-color:#09F;
+    color:#fff;
+    font-weight:bold;
+}
+
+input[type=text]:focus,
+input[type=email]:focus,
+input[type=tel]:focus{
+    border:1px solid #09F;
+    -webkit-box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.3);
+-moz-box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.3);
+box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.3);
+}
+
+
+
+
+
+
+
+      input[type=range] {
+    /*removes default webkit styles*/
+    -webkit-appearance: none;
+
+    /*fix for FF unable to apply focus style bug */
+    border: 1px solid white;
+
+    /*required for proper track sizing in FF*/
+    width: 300px;
+}
+input[type=range]::-webkit-slider-runnable-track {
+    width: 300px;
+    height: 5px;
+    background: #ddd;
+    border: none;
+    border-radius: 3px;
+}
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    border: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background: goldenrod;
+    margin-top: -4px;
+}
+input[type=range]:focus {
+    outline: none;
+}
+input[type=range]:focus::-webkit-slider-runnable-track {
+    background: #ccc;
+}
+
+input[type=range]::-moz-range-track {
+    width: 300px;
+    height: 5px;
+    background: #ddd;
+    border: none;
+    border-radius: 3px;
+}
+input[type=range]::-moz-range-thumb {
+    border: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background: goldenrod;
+}
+
+/*hide the outline behind the border*/
+input[type=range]:-moz-focusring{
+    outline: 1px solid white;
+    outline-offset: -1px;
+}
+
+input[type=range]::-ms-track {
+    width: 300px;
+    height: 5px;
+
+    /*remove bg colour from the track, we'll use ms-fill-lower and ms-fill-upper instead */
+    background: transparent;
+
+    /*leave room for the larger thumb to overflow with a transparent border */
+    border-color: transparent;
+    border-width: 6px 0;
+
+    /*remove default tick marks*/
+    color: transparent;
+}
+input[type=range]::-ms-fill-lower {
+    background: #777;
+    border-radius: 10px;
+}
+input[type=range]::-ms-fill-upper {
+    background: #ddd;
+    border-radius: 10px;
+}
+input[type=range]::-ms-thumb {
+    border: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background: goldenrod;
+}
+input[type=range]:focus::-ms-fill-lower {
+    background: #888;
+}
+input[type=range]:focus::-ms-fill-upper {
+    background: #ccc;
+}

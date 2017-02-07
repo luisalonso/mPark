@@ -1,0 +1,290 @@
+{% load staticfiles %}
+
+<html>
+<head>
+	<link rel="stylesheet" href="{% static "theme.css" %}">
+	<link rel="stylesheet" href="{% static "bootstrap.min.css" %}">
+	<link rel="stylesheet" href="{% static "animate.css" %}" type="text/css">
+	<script type="text/javascript" src="{% static "rmodal.js" %}"></script>
+
+	<script type="text/javascript">
+		window.onload = function() {
+			var modal = new RModal(document.getElementById('modal'), {
+                //content: 'Abracadabra'
+                beforeOpen: function(next) {
+                	console.log('beforeOpen');
+                	next();
+                }
+                , afterOpen: function() {
+                	console.log('opened');
+                }
+
+                , beforeClose: function(next) {
+                	console.log('beforeClose');
+                	next();
+                }
+                , afterClose: function() {
+                	console.log('closed');
+                }
+            });
+
+			document.addEventListener('keydown', function(ev) {
+				modal.keydown(ev);
+			}, false);
+
+			document.getElementById('showModal').addEventListener("click", function(ev) {
+				ev.preventDefault();
+				modal.open();
+			}, false);
+
+			window.modal = modal;
+		}
+	</script>
+
+	<script type="text/javascript"
+	src="https://www.google.com/jsapi?autoload={
+		'modules':[{
+			'name':'visualization',
+			'version':'1',
+			'packages':['corechart']
+		}]
+	}"></script>
+
+	<script type="text/javascript">
+		google.load("visualization", "1", {packages:["table"]});
+		google.load("visualization", "1", {packages:["corechart"]});
+
+		var dataArray = [
+			{% for p in patients %}
+				['{{ p.name }} {{ p.last_name }}','{{ p.code }}', "Parkinson's disease", true, true, 'Accepted'],
+			{% endfor %}
+		];
+
+		var dataArrayWithId = [
+			{% for p in patients %}
+				 ['{{ p.id }}', '{{ p.name }}','{{ p.code }}', "Parkinson's disease", true, true, 'Accepted'],
+			{% endfor %}
+		];
+	</script>
+
+	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+	<script type="text/javascript">
+      //google.load("visualization", "1", {packages:["table"]});
+      //oogle.setOnLoadCallback(drawTable);
+      function checkInputData() {
+      	if (dataArray.contains("Madrid")){
+      		document.getElementById("container-fluid").innerHTML="ERROR";
+      	}
+      }
+
+    function drawVisualization() {
+    // Prepare the data
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'Name');
+    data.addColumn('string', 'mPark Code');
+    data.addColumn('string', 'Disease');
+    data.addColumn('boolean', 'Symptoms progression');
+    data.addColumn('boolean', 'Patient following the therapy');
+		data.addColumn('string', 'Status');
+    data.addRows(dataArray);
+
+    // create a list of columns for the dashboard
+    var columns = [{
+        // this column aggregates all of the data into one column
+        // for use with the string filter
+        type: 'string',
+        calc: function (dt, row) {
+        	for (var i = 0, vals = [], cols = dt.getNumberOfColumns(); i < cols; i++) {
+        		vals.push(dt.getFormattedValue(row, i));
+        	}
+        	return vals.join('\n');
+        }
+    }];
+
+    for (var i = 0, cols = data.getNumberOfColumns(); i < cols; i++) {
+    	columns.push(i);
+    }
+
+    // Define a slider control for the 'Donuts eaten' column
+    var filter = new google.visualization.ControlWrapper({
+    	controlType: 'StringFilter',
+    	containerId: 'filter_div',
+    	options: {
+    		filterColumnIndex: 0,
+    		matchType: 'any',
+    		caseSensitive: false,
+    		ui: {
+    			label: ''
+    		}
+    	},
+    	view: {
+    		columns: columns
+    	}
+    });
+
+    var cssClasses = {
+    	headerRow: 'cssHeaderRow',
+    	tableRow: 'cssTableRow',
+    	oddTableRow: '.cssOddTableRow',
+    	selectedTableRow: '.cssSelectedTableRow',
+    	hoverTableRow: 'cssHoverTableRow',
+    	headerCell: 'cssHeaderCell',
+    	tableCell: 'cssTableCell',
+    	rowNumberCell: 'cssRowNumberCell'
+    };
+
+
+    // Define a pie chart
+    var table = new google.visualization.ChartWrapper({
+    	chartType: 'Table',
+    	containerId: 'table_div',
+
+    	options: {
+    		'showRowNumber':false,
+    		'sortColumn':3,
+    		'sortAscending':false,
+    		'allowHtml':true,
+    		'cssClassNames':cssClasses,
+    	},
+    	view: {
+    		columns: [1, 2, 3, 4, 5, 6]
+    	}
+    });
+
+    var dashboard = new google.visualization.Dashboard(document.getElementById('dashboard'));
+    dashboard.bind([filter], [table]);
+    dashboard.draw(data);
+
+    // Every time the table fires the "select" event, it should call your
+	// selectHandler() function.
+	google.visualization.events.addListener(table, 'select', selectHandler);
+
+	function selectHandler() {
+		var selection = dashboard.getSelection();
+		var message = '';
+
+  		var patientId = dataArrayWithId[selection[0].row][0];
+  		var professionalId = {{ user.id }};
+
+		window.location = 'professional/profile/'+patientId+'/'+professionalId;
+	}
+
+}
+google.load('visualization', '1', {packages:['controls'], callback: drawVisualization});
+</script>
+</head>
+
+
+<body id="body" style="overflow:hidden;">
+	<div class="headsection group" >
+		<div class="headcol headspan_1_of_2">
+
+			<IMG SRC="{% static "mPark_logo.jpg" %}" alt="mPark logo" height="80%" >
+			</div>
+			<div class="headcol headspan_2_of_2">
+				{% if user.is_authenticated %}
+        <p class="top-menu">Welcome {{ user.username }}! (<a href="{% url 'django.contrib.auth.views.logout' %}">Log out</a>)</p>
+        {% else %}
+        <a href="{% url 'django.contrib.auth.views.login' %}" class="top-menu"><span class="glyphicon glyphicon-lock"></span></a>
+        {% endif %}
+				<p class="top-menu">[<a href="{% url 'post_list' %}">News and updates</a>]</p>
+
+			</div>
+		</div>
+
+
+		<div class="section group">
+			<div class="col span_1_of_2">
+
+
+				<div id="modal" class="modal">
+					<div class="modal-dialog animated">
+						<div class="modal-content">
+							<form class="form-horizontal" method="get">
+								<div class="modal-header">
+									<strong>Add a new patient</strong>
+								</div>
+
+								<div class="modal-body">
+									<div class="form-group">
+										<label for="dummyText" class="control-label col-xs-4">Patient nickname</label>
+										<div class="input-group col-xs-7">
+											<input type="text" name="dummyText" id="dummyText" class="form-control" />
+										</div>
+									</div>
+
+
+
+									<div class="form-group">
+										<label for="dummyText" class="control-label col-xs-4">mPark code</label>
+										<div class="input-group col-xs-7">
+											<input type="text" name="dummyText" id="dummyText" class="form-control" />
+										</div>
+									</div>
+
+
+									<div class="form-group">
+										<label for="dummyText" class="control-label col-xs-4">Profile</label>
+										<div class="input-group col-xs-7">
+											<select class="form-control">
+												<option value="therapist">Parkinson's disease</option>
+												<option value="neurologist">ALS</option>
+												<option value="other">Other</option>
+											</select>
+										</div>
+									</div>
+
+
+								</div>
+
+								<div class="modal-footer">
+									<button class="btn btn-default" type="button" onclick="modal.close();">Cancel</button>
+									<button class="btn btn-primary" type="submit" onclick="checkInputData();">Save</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+
+
+						<div class="col-lg-12">
+							<a href="#" id="showModal" class="btn btn-success">Add a new patient</a>
+						</div>
+
+
+
+				<div class="container-fluid">
+						<h4>Search and filter:</h4>
+<div id="filter_div"></div>
+
+
+					<h4>Professional dashboard</h4>
+					<div class="row">
+						<div class="col-lg-12">
+
+							<ul>
+								<li>This is the professional dashboard</li>
+								<li>You can explore your patients in the table in the right</li>
+								<li>Click on any patient to have access to detailed statistics</li>
+								<li>Use the form below to search and filter</li>
+
+							</ul>
+						</div>
+					</div>
+
+					<div class="row">
+					</div>
+
+				</div>
+
+			</div>
+
+			<div class="col span_2_of_2">
+
+				<div id="table_div"></div>
+
+			</div>
+
+		</div>
+	</body>
+	</html>
